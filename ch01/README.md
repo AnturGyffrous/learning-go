@@ -9,6 +9,7 @@ coworker who would love to learn about go.
 created by `go build`. Take a look at the Go command documentation (https://oreil.ly/uqsMy) to find a go command to help
 implement this.
 
+* [Add a clean target to the Makefile `66388b4`](https://github.com/AnturGyffrous/learning-go/commit/66388b4f56da3b1c7a3fd13b969c8c098a8a2aed)
 
 3. Experiment with modifying the formatting in the "Hello, world!" program. Add blank lines, spaces, change indentation,
 insert newlines. After making a modification, run `go fmt` to see if the formatting change is undone. Also, run
