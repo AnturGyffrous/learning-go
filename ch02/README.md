@@ -9,3 +9,7 @@ variable named `f`. Print out `i` and `f`.
 variable. Assign it to an integer called `i` and a floating-point variable called `f`. Print out `i` and `f`.
 
 * [Exercise 2 - Experiment with constants `e5c2a95`](https://github.com/AnturGyffrous/learning-go/commit/e5c2a95d7b7f9f5f9ea0171652543e1aecf07798)
+
+3. Write a program with three variables, one named `b` of type `byte`, one named `smallI` of type `int32`, and one named
+`bigI` of type `uint64`. Assign each variable the maximum legal value for its type; then add 1 to each variable. Print
+out their values.
