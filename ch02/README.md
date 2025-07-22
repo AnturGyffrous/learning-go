@@ -13,3 +13,5 @@ variable. Assign it to an integer called `i` and a floating-point variable calle
 3. Write a program with three variables, one named `b` of type `byte`, one named `smallI` of type `int32`, and one named
 `bigI` of type `uint64`. Assign each variable the maximum legal value for its type; then add 1 to each variable. Print
 out their values.
+
+* [Exercise 3 - Experiment with overflows `de274b6`](https://github.com/AnturGyffrous/learning-go/commit/de274b66100b000c6a7fd807109d52ab9cc7f84f)
