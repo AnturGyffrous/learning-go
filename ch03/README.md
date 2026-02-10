@@ -9,3 +9,5 @@
 * [Exercise 2 - Experiment with strings and runes `88604ff`](https://github.com/AnturGyffrous/learning-go/commit/88604ff4a803533103186b2404930ad68a7de003)
 
 3. Write a program that defines a struct called Employee with three fields: firstName, lastName, and id. The first two fields are of type string and the last field (id) is of type int. Create three instances of this struct using whatever values you'd like. Initialize the first one using the struct literal style without keys, the second using the struct literal style with keys, and the third with var declaration. Use dot notation to populate the fields in the third struct. Print out all three structs.
+
+* [Exercise 3 - Experiment with structs `bf04598`](https://github.com/AnturGyffrous/learning-go/commit/bf04598c434e752f569ce316956da9508233a53c)
