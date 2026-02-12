@@ -5,15 +5,15 @@ import (
 	"strconv"
 )
 
-type opFuncType func(int, int) int
+type opFuncType func(int, int) (int, error)
 
-func add(i int, j int) int { return i + j }
+func add(i int, j int) (int, error) { return i + j, nil }
 
-func sub(i int, j int) int { return i - j }
+func sub(i int, j int) (int, error) { return i - j, nil }
 
-func mul(i int, j int) int { return i * j }
+func mul(i int, j int) (int, error) { return i * j, nil }
 
-func div(i int, j int) int { return i / j }
+func div(i int, j int) (int, error) { return i / j, nil }
 
 var opMap = map[string]opFuncType{
 	"+": add,
@@ -31,6 +31,7 @@ func main() {
 		{"2", "%", "3"},
 		{"two", "+", "three"},
 		{"5"},
+		{"2", "/", "0"},
 	}
 	for _, expression := range expressions {
 		if len(expression) != 3 {
@@ -53,7 +54,7 @@ func main() {
 			fmt.Println(err)
 			continue
 		}
-		result := opFunc(p1, p2)
+		result, _ := opFunc(p1, p2)
 		fmt.Println(result)
 	}
 }
