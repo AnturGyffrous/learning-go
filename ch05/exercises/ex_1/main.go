@@ -60,7 +60,11 @@ func main() {
 			fmt.Println(err)
 			continue
 		}
-		result, _ := opFunc(p1, p2)
+		result, err := opFunc(p1, p2)
+		if err != nil {
+			fmt.Println(err)
+			continue
+		}
 		fmt.Println(result)
 	}
 }
