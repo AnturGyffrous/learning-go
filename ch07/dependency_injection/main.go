@@ -3,6 +3,7 @@ package main
 import (
 	"errors"
 	"fmt"
+	"net/http"
 )
 
 func LogOutput(message string) {
@@ -73,4 +74,21 @@ func NewSimpleLogic(l Logger, ds DataStore) SimpleLogic {
 
 type Logic interface {
 	SayHello(userID string) (string, error)
+}
+
+type Controller struct {
+	l     Logger
+	logic Logic
+}
+
+func (c Controller) SayHello(w http.ResponseWriter, r *http.Request) {
+	c.l.Log("in SayHello for " + r.URL.Path)
+	userID := r.URL.Query().Get("user_id")
+	message, err := c.logic.SayHello(userID)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		w.Write([]byte(err.Error()))
+		return
+	}
+	w.Write([]byte(message))
 }
