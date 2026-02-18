@@ -70,3 +70,7 @@ func NewSimpleLogic(l Logger, ds DataStore) SimpleLogic {
 		ds: ds,
 	}
 }
+
+type Logic interface {
+	SayHello(userID string) (string, error)
+}
