@@ -63,3 +63,10 @@ func (sl SimpleLogic) SayGoodbye(userID string) (string, error) {
 	}
 	return "Goodbye, " + name, nil
 }
+
+func NewSimpleLogic(l Logger, ds DataStore) SimpleLogic {
+	return SimpleLogic{
+		l:  l,
+		ds: ds,
+	}
+}
