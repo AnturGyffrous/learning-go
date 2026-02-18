@@ -23,3 +23,11 @@ func NewSimpleDataStore() SimpleDataStore {
 			"3": "Pat",
 		}}
 }
+
+type DataStore interface {
+	UserNameForID(id string) (string, bool)
+}
+
+type Logger interface {
+	Log(message string)
+}
