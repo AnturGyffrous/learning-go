@@ -34,21 +34,13 @@ func (l League) MatchResult(team1 string, score1 int, team2 string, score2 int) 
 }
 
 func (l League) Ranking() []string {
-	type TeamWin struct {
-		TeamName string
-		Wins     int
-	}
-	teams := make([]TeamWin, 0, len(l.Teams))
-	for teamName := range l.Teams {
-		teams = append(teams, TeamWin{teamName, l.Wins[teamName]})
-	}
-	sort.Slice(teams, func(i, j int) bool {
-		return teams[i].Wins > teams[j].Wins
-	})
 	rankings := make([]string, 0, len(l.Teams))
-	for _, team := range teams {
-		rankings = append(rankings, team.TeamName)
+	for teamName := range l.Teams {
+		rankings = append(rankings, teamName)
 	}
+	sort.Slice(rankings, func(i, j int) bool {
+		return l.Wins[rankings[i]] > l.Wins[rankings[j]]
+	})
 	return rankings
 }
 
