@@ -1,15 +1,26 @@
 package main
 
-import "fmt"
+import (
+	"cmp"
+	"errors"
+	"fmt"
+)
 
-type LinkedList[T comparable] struct {
-	Root *Node[T]
+type OrderableFunc[T any] func(t1, t2 T) int
+
+type LinkedList[T any] struct {
+	Compare OrderableFunc[T]
+	Root    *Node[T]
 }
 
-type Node[T comparable] struct {
+type Node[T any] struct {
 	Position int
 	Value    T
 	Next     *Node[T]
+}
+
+func NewLinkedList[T any](compare OrderableFunc[T]) *LinkedList[T] {
+	return &LinkedList[T]{Compare: compare}
 }
 
 func (ll *LinkedList[T]) Add(value T) {
@@ -36,8 +47,34 @@ func (node *Node[T]) Add(value T) *Node[T] {
 	return node
 }
 
+func (ll *LinkedList[T]) Insert(value T, index int) (bool, error) {
+	if ll.Root == nil {
+		return false, errors.New("list is empty")
+	}
+
+	root, ok, err := ll.Root.Insert(ll.Compare, value, index)
+}
+
+func (node *Node[T]) Insert(compare OrderableFunc[T], value T, index int) (*Node[T], bool, error) {
+	if node == nil {
+		return nil, false, errors.New("index out of range")
+	}
+
+	if node.Position < index {
+		next, ok, err := node.Next.Insert(compare, value, index)
+		if !ok {
+			return nil, false, err
+		}
+		node.Next = next
+		return node, true, nil
+	}
+	if node.Position == index {
+
+	}
+}
+
 func main() {
-	ll := LinkedList[int]{}
+	ll := NewLinkedList[int](cmp.Compare)
 	ll.Add(2)
 	ll.Add(1)
 	ll.Add(3)
