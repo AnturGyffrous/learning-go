@@ -22,19 +22,32 @@ func main() {
 			continue
 		}
 		err = ValidateEmployee(emp)
+		message := fmt.Sprintf("record %d: %+v", count, emp)
 		if err != nil {
-			var efr EmptyFieldErr
-			if errors.Is(err, ErrInvalidID) {
-				fmt.Printf("record %d: %+v error: invalid ID: %s\n", count, emp, emp.ID)
-			} else if errors.As(err, &efr) {
-				fmt.Printf("record %d: %+v error: missing field: %s\n", count, emp, efr.Field)
-			} else {
-				fmt.Printf("record %d: %+v error: %v\n", count, emp, err)
+			switch err := err.(type) {
+			case interface{ Unwrap() []error }:
+				innerErrs := err.Unwrap()
+				messages := make([]string, len(innerErrs))
+				for _, innerErr := range innerErrs {
+					messages = append(messages, ValidationErrorString(innerErr, emp))
+				}
+				message = message + fmt.Sprintf(" errors: %s", strings.Join(messages, ", "))
+			default:
+				message = message + fmt.Sprintf(" error: %s", ValidationErrorString(err, emp))
 			}
-			continue
 		}
-		fmt.Printf("record %d: %+v\n", count, emp)
+		fmt.Println(message)
 	}
+}
+
+func ValidationErrorString(err error, emp Employee) string {
+	var efr EmptyFieldErr
+	if errors.Is(err, ErrInvalidID) {
+		return fmt.Sprintf("invalid ID: %s", emp.ID)
+	} else if errors.As(err, &efr) {
+		return fmt.Sprintf("missing field: %s", efr.Field)
+	}
+	return fmt.Sprintf("%v", err)
 }
 
 const data = `
@@ -101,21 +114,40 @@ func (efe EmptyFieldErr) Error() string {
 	return fmt.Sprintf("empty field: %s", efe.Field)
 }
 
+type EmployeeValidationErr struct {
+	Errors []error
+}
+
+func (eve EmployeeValidationErr) Error() string {
+	return errors.Join(eve.Errors...).Error()
+}
+
+func (eve EmployeeValidationErr) Unwrap() []error {
+	return eve.Errors
+}
+
 func ValidateEmployee(e Employee) error {
+	var errs []error
 	if len(e.ID) == 0 {
-		return EmptyFieldErr{Field: "ID"}
-	}
-	if !validID.MatchString(e.ID) {
-		return ErrInvalidID
+		errs = append(errs, EmptyFieldErr{Field: "ID"})
+	} else if !validID.MatchString(e.ID) {
+		errs = append(errs, ErrInvalidID)
 	}
 	if len(e.FirstName) == 0 {
-		return EmptyFieldErr{Field: "FirstName"}
+		errs = append(errs, EmptyFieldErr{Field: "FirstName"})
 	}
 	if len(e.LastName) == 0 {
-		return EmptyFieldErr{Field: "LastName"}
+		errs = append(errs, EmptyFieldErr{Field: "LastName"})
 	}
 	if len(e.Title) == 0 {
-		return EmptyFieldErr{Field: "Title"}
+		errs = append(errs, EmptyFieldErr{Field: "Title"})
 	}
-	return nil
+	switch len(errs) {
+	case 0:
+		return nil
+	case 1:
+		return errs[0]
+	default:
+		return EmployeeValidationErr{Errors: errs}
+	}
 }
