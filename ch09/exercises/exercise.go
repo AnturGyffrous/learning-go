@@ -23,8 +23,11 @@ func main() {
 		}
 		err = ValidateEmployee(emp)
 		if err != nil {
+			var efr EmptyFieldErr
 			if errors.Is(err, ErrInvalidID) {
 				fmt.Printf("record %d: %+v error: invalid ID: %s\n", count, emp, emp.ID)
+			} else if errors.As(err, &efr) {
+				fmt.Printf("record %d: %+v error: missing field: %s\n", count, emp, efr.Field)
 			} else {
 				fmt.Printf("record %d: %+v error: %v\n", count, emp, err)
 			}
@@ -90,21 +93,29 @@ var (
 	validID = regexp.MustCompile(`\w{4}-\d{3}`)
 )
 
+type EmptyFieldErr struct {
+	Field string
+}
+
+func (efe EmptyFieldErr) Error() string {
+	return fmt.Sprintf("empty field: %s", efe.Field)
+}
+
 func ValidateEmployee(e Employee) error {
 	if len(e.ID) == 0 {
-		return errors.New("missing ID")
+		return EmptyFieldErr{Field: "ID"}
 	}
 	if !validID.MatchString(e.ID) {
 		return ErrInvalidID
 	}
 	if len(e.FirstName) == 0 {
-		return errors.New("missing FirstName")
+		return EmptyFieldErr{Field: "FirstName"}
 	}
 	if len(e.LastName) == 0 {
-		return errors.New("missing LastName")
+		return EmptyFieldErr{Field: "LastName"}
 	}
 	if len(e.Title) == 0 {
-		return errors.New("missing Title")
+		return EmptyFieldErr{Field: "Title"}
 	}
 	return nil
 }
