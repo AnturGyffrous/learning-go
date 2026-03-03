@@ -8,6 +8,8 @@ import (
 	"strings"
 )
 
+var ErrInvalidID = errors.New("invalid ID")
+
 func main() {
 	d := json.NewDecoder(strings.NewReader(data))
 	count := 0
@@ -21,7 +23,11 @@ func main() {
 		}
 		err = ValidateEmployee(emp)
 		if err != nil {
-			fmt.Printf("record %d: %+v error: %v\n", count, emp, err)
+			if errors.Is(err, ErrInvalidID) {
+				fmt.Printf("record %d: %+v error: invalid ID: %s\n", count, emp, emp.ID)
+			} else {
+				fmt.Printf("record %d: %+v error: %v\n", count, emp, err)
+			}
 			continue
 		}
 		fmt.Printf("record %d: %+v\n", count, emp)
@@ -89,7 +95,7 @@ func ValidateEmployee(e Employee) error {
 		return errors.New("missing ID")
 	}
 	if !validID.MatchString(e.ID) {
-		return errors.New("invalid ID")
+		return ErrInvalidID
 	}
 	if len(e.FirstName) == 0 {
 		return errors.New("missing FirstName")
