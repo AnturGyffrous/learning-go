@@ -114,18 +114,6 @@ func (efe EmptyFieldErr) Error() string {
 	return fmt.Sprintf("empty field: %s", efe.Field)
 }
 
-type EmployeeValidationErr struct {
-	Errors []error
-}
-
-func (eve EmployeeValidationErr) Error() string {
-	return errors.Join(eve.Errors...).Error()
-}
-
-func (eve EmployeeValidationErr) Unwrap() []error {
-	return eve.Errors
-}
-
 func ValidateEmployee(e Employee) error {
 	var errs []error
 	if len(e.ID) == 0 {
@@ -148,6 +136,6 @@ func ValidateEmployee(e Employee) error {
 	case 1:
 		return errs[0]
 	default:
-		return EmployeeValidationErr{Errors: errs}
+		return errors.Join(errs...)
 	}
 }
