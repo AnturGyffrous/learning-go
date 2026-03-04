@@ -27,7 +27,7 @@ func main() {
 			switch err := err.(type) {
 			case interface{ Unwrap() []error }:
 				innerErrs := err.Unwrap()
-				messages := make([]string, len(innerErrs))
+				messages := make([]string, 0, len(innerErrs))
 				for _, innerErr := range innerErrs {
 					messages = append(messages, ValidationErrorString(innerErr, emp))
 				}
