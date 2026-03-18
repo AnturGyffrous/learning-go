@@ -5,14 +5,18 @@ import (
 	"log"
 	"os"
 
-	"github.com/learning-go-book-2e/simpletax"
+	"github.com/learning-go-book-2e/simpletax/v2"
 	"github.com/shopspring/decimal"
 )
 
 func main() {
-	amount, _ := decimal.NewFromString(os.Args[1])
+	amount, err := decimal.NewFromString(os.Args[1])
+	if err != nil {
+		log.Fatal(err)
+	}
 	zip := os.Args[2]
-	percent, err := simpletax.TaxForZip(zip)
+	country := os.Args[3]
+	percent, err := simpletax.ForCountryPostalCode(country, zip)
 	if err != nil {
 		log.Fatal(err)
 	}
