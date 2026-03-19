@@ -1,0 +1,3 @@
+[submodule "ch10/my_workspace/workspace_lib"]
+	path = ch10/my_workspace/workspace_lib
+	url = git@github.com:AnturGyffrous/workspace_lib.git
