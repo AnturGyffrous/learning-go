@@ -5,33 +5,35 @@ import "fmt"
 func main() {
 	ch1 := make(chan int)
 	ch2 := make(chan int)
-	quit := make(chan bool)
-	defer close(ch1)
-	defer close(ch2)
-	defer close(quit)
 	go func() {
 		for n := 3; n <= 30; n += 3 {
 			ch1 <- n
 		}
-		quit <- true
+		close(ch1)
 	}()
 	go func() {
 		for n := 5; n < 50; n += 5 {
 			ch2 <- n
 		}
-		quit <- true
+		close(ch2)
 	}()
-	done := 0
-	for {
+	done := 2
+	for done > 0 {
 		select {
-		case <-quit:
-			if done++; done > 1 {
-				return
+		case n, ok := <-ch1:
+			if !ok {
+				ch1 = nil
+				done--
+				break
 			}
-		case a := <-ch1:
-			fmt.Println("ch1 - ", a)
-		case b := <-ch2:
-			fmt.Println("ch2 - ", b)
+			fmt.Println("ch1 - ", n)
+		case n, ok := <-ch2:
+			if !ok {
+				ch2 = nil
+				done--
+				break
+			}
+			fmt.Println("ch2 - ", n)
 		}
 	}
 }
