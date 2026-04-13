@@ -26,9 +26,9 @@ func main() {
 				return
 			}
 		case a := <-ch1:
-			fmt.Println(a)
+			fmt.Println("ch1 - ", a)
 		case b := <-ch2:
-			fmt.Println(b)
+			fmt.Println("ch2 - ", b)
 		}
 	}
 }
