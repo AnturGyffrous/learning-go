@@ -6,6 +6,9 @@ func main() {
 	ch1 := make(chan int)
 	ch2 := make(chan int)
 	quit := make(chan bool)
+	defer close(ch1)
+	defer close(ch2)
+	defer close(quit)
 	go func() {
 		for n := 3; n <= 30; n += 3 {
 			ch1 <- n
