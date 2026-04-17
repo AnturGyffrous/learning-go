@@ -1,9 +1,11 @@
 package main
 
 import (
+	"compress/gzip"
 	"fmt"
 	"io"
 	"log/slog"
+	"os"
 	"strings"
 )
 
@@ -37,9 +39,43 @@ func simpleCountLetters() error {
 	return nil
 }
 
+func buildGZipReader(fileName string) (*gzip.Reader, func(), error) {
+	r, err := os.Open(fileName)
+	if err != nil {
+		return nil, nil, err
+	}
+	gr, err := gzip.NewReader(r)
+	if err != nil {
+		return nil, nil, err
+	}
+	return gr, func() {
+		gr.Close()
+		r.Close()
+	}, nil
+}
+
+func gzipCountLetters() error {
+	r, closer, err := buildGZipReader("my_data.txt.gz")
+	if err != nil {
+		return err
+	}
+	defer closer()
+	counts, err := countLetters(r)
+	if err != nil {
+		return err
+	}
+	fmt.Println(counts)
+	return nil
+}
+
 func main() {
 	err := simpleCountLetters()
 	if err != nil {
 		slog.Error("error with simpleCountLetters", "msg", err)
+	}
+
+	err = gzipCountLetters()
+	if err != nil {
+		slog.Error("error with gzipCountLetters", "msg", err)
 	}
 }
